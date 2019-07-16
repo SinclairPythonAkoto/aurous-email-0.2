@@ -1,0 +1,27 @@
+{% extends "aurous_base.html" %}
+{% block content %}
+
+<h1>Welcome to Aurous 79®</h1>
+<br>
+<p>How was your experience today? Complete the feedback form to get 5% off from your bill!</p>
+<br>
+<p>Click here to fill in the <a href="{{ url_for('feedback') }}">Feedback Form.</a></p>
+<br>
+<p>Don't feel like completing the feedback form? Sign the <a href="{{ url_for('guestbook') }}">Guestbook</a> instead!</p>
+<p>Click here to login as <a href="/adminlogin">Management.</a></p>
+<br><br>
+<h3>Customer Guestbook:</h3>
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Comments</th>
+	</tr>
+	{% for customer in data %}
+		<tr>
+			<td>{{ customer[1] }}</td>
+			<td>{{ customer[12] }}</td>
+		</tr>
+	{% endfor %}
+</table>
+
+{% endblock %}

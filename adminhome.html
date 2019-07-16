@@ -1,0 +1,70 @@
+{% extends "aurous_base.html" %}
+{% block content %}
+
+<h1>Aurous 79® Admin</h1>
+<br>
+<p>Click here to run <a href="/adminreports">Reports</a> from your feedback form</p>
+<br><br>
+<h2>Guestbook</h2>
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Email</th>
+		<th>Comments</th>
+	</tr>
+	{% for customer in guest_entries %}
+		<tr>
+			<td>{{ customer[1] }}</td>
+			<td>{{ customer[13] }}</td>
+			<td>{{ customer[12] }}</td>
+		</tr>
+	{% endfor %}
+</table>
+<br>
+<br>
+<br>
+<h2>Feedback Form</h2>
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Age</th>
+		<th>Sex</th>
+		<th>Postcode</th>
+		<th>Email</th>
+		<th>Comments</th>
+		<th>Date</th>
+		<th>Time</th>
+		<th>First Visit</th>
+		<th>Customer Visit</th>
+		<th>Return Customers</th>
+		<th>Cleanliness</th>
+		<th>Service</th>
+		<th>Speed</th>
+		<th>Shisha</th>
+	</tr>
+	{% for customer in data %}
+	<tr>
+		<td>{{customer[1]}}</td>
+		<td>{{customer[2]}}</td>
+		<td>{{customer[3]}}</td>
+		<td>{{customer[4]}}</td>
+		<td>{{customer[13]}}</td>
+		<td>{{customer[12]}}</td>
+		<td>{{customer[14]}}</td>
+		<td>{{customer[15]}}</td>
+		<td>{{customer[5]}}</td>
+		<td>{{customer[6]}}</td>
+		<td>{{customer[7]}}</td>
+		<td>{{customer[8]}}</td>
+		<td>{{customer[9]}}</td>
+		<td>{{customer[10]}}</td>
+		<td>{{customer[11]}}</td>
+	</tr>
+	{% endfor %}
+</table>
+<br>
+<br>
+<br>
+<footer><a href="{{ url_for('logout')}}">Logout</a></footer>
+
+{% endblock %}
