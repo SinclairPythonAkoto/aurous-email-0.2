@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    	<title>Aurous 79</title>
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    	<link href="static/bootstrap.min.css" rel="stylesheet" media="screen">
+        <style>
+            table {
+                border: 2px solid black;
+                border-collapse: collapse;
+                width: 50%;
+            }
+
+            th,td {
+                border: 1px solid black;
+                padding: 5px;
+                text-align: center;
+                background-color: rgba(255, 183,0,0.614);
+            }
+
+            th {
+                background-color: lightgray;
+            }
+        </style>
+  	</head>
+  	<body>
+
+    	<div class="container">
+
+    		<!-- child template -->
+    		{% block content %}{% endblock %}
+
+    		<!-- errors message -->
+    		{% if error %}
+    			<p class="error"><strong>Error:</strong>{{ error }}</p>
+    		{% endif %}
+
+    		<!-- flash messages -->
+    		{% for messages in get_flashed_messages() %}
+    			{{ messages }}
+    		{% endfor %}
+		</div>
+
+	</body>
+</html>
