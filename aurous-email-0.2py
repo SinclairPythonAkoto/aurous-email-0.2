@@ -1,0 +1,190 @@
+from flask import Flask, render_template, redirect, url_for, request, session, flash, g
+from functools import wraps
+import sqlite3
+import csv
+from time import gmtime, strftime
+import smtplib
+from flask_mail import Mail, Message
+
+
+
+conn = sqlite3.connect('aurousdata.db', check_same_thread=False) # this is to connect your database to Flask
+db = conn.cursor()
+
+app = Flask(__name__)
+
+app.config.update(dict(
+    DEBUG = True,
+    MAIL_SERVER = 'smtp.gmail.com',
+    MAIL_PORT = 587,  # gmail port 587 or 465. Every email provider has their own port
+    # you will have to allow less secure apps feature in your Gmail settings for this to gain access to email.
+    MAIL_USE_TLS = True,
+    MAIL_USE_SSL = False,
+    MAIL_USERNAME = 'sinclair.python@gmail.com',
+    MAIL_PASSWORD = 'Shalieka2017',
+    MAIL_DEFAULT_SENDER = ('Aurous 79®', 'sinclair.python@gmail.com'), #('NAME OR TITLE OF SENDER', 'SENDER EMAIL ADDRESS')
+    MAIL_MAX_EMAILS = 5
+))
+
+mail = Mail(app)
+
+
+
+app.secret_key = "welbeck" # this should be changed to number generated characters
+
+customers = [] #empty list of customers that will complete the feedback form
+
+
+def login_required(f):
+	@wraps(f)
+	def wrap(*args, **kwargs):
+		if 'logged_in' in session:
+			return f(*args, **kwargs)
+		else:
+			flash('You need to sign in first')
+			return redirect(url_for('login'))
+	return wrap
+
+@app.route('/')
+def home():
+	db.execute("SELECT * FROM CustomerFeedback")
+	data = db.fetchall()
+	return render_template('aurous_home.html', data=data)
+
+@app.route('/feedback', methods=['GET', 'POST'])
+def feedback():
+	if request.method == "GET":
+		return render_template('aurous_feedback.html')
+	else:
+		name = request.form.get("name")
+		comment = request.form.get("comment")
+		guest = False
+		name = request.form.get("name")
+		comment = request.form.get("comment")
+		# This is converted to an int because in your database, Age is an Int. If you don't do this, you get an DB error
+		age = request.form.get("age")
+		sex = request.form.get("sex")
+		postcode = request.form.get("postcode")
+		first_visit = request.form.get("firstvisit")
+		customer_visits = request.form.get("customervisits")
+		return_customers = request.form.get("returncustomers")
+		clean = int(request.form.get("cleanliness"))
+		service = int(request.form.get("customerservice"))
+		speed = int(request.form.get("speed"))
+		shisha = request.form.get("shisha")
+		email = request.form.get("email")
+		confirmemail = request.form.get("confirmemail")
+		date = strftime("%d-%m-%y", gmtime())
+		time = strftime("%H:%M", gmtime())
+
+		if email == confirmemail:
+			# (name, comment, email) this is the names of the headers in your table
+			db.execute("INSERT INTO CustomerFeedback (date, time, GuestOnly, name, comment, age, sex, postcode, first_visit, customer_visits, return_customers, clean, service, speed, shisha, email) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (date, time, guest, name, comment, age, sex, postcode, first_visit, customer_visits, return_customers, clean, service, speed, shisha, email))
+			conn.commit() # this is to connect to the database and save the changes.
+			#conn.close()
+
+			msg = Message('My Aurous® Discount!', recipients=[email])
+			# the f-string below works!
+			msg.body = f'Thank you {name} for completing our feedback form! You have earned 5"%" off from your bill.\n\nTo gain your discount please show this email to the cashier.\n\nPlease note that this expires 24hrs after {date} {time}.\n\n\n'
+
+			with app.open_resource('aurouslogo.jpg') as logo:
+				msg.attach('aurouslogo.jpg', 'image/jpeg', logo.read())
+
+			mail.send(msg) # this works
+			return redirect(url_for('home'))
+		else:
+			error = "Please provide a valid email"
+			return render_template('aurous_feeback.html', error=error)
+
+
+@app.route('/guestbook', methods=['GET', 'POST'])
+def guestbook():
+	if request.method == "GET":
+		return render_template('aurous_guestbook.html')
+	else:
+		name = request.form.get("name")
+		comment = request.form.get("comment")
+		customers.append(name)
+		guest = True
+		name = request.form.get("name")
+		comment = request.form.get("comment")
+		email = request.form.get("email")
+		confirmemail = request.form.get("confirmemail")
+		date = strftime("%d-%m-%y", gmtime())
+		time = strftime("%H:%M", gmtime())
+		if email == confirmemail:
+			# (name, comment, email) this is the names of the headers in your table
+			db.execute("INSERT INTO CustomerFeedback (name, comment, email, GuestOnly, date, time) VALUES (?,?,?,?,?,?)", (name, comment, email, guest, date, time))
+			conn.commit()			
+			#conn.close()
+			return redirect(url_for('home'))
+		else:
+			error = "Please provide a valid email"
+			return render_template('aurous_guestbook.html', error=error)
+
+
+
+@app.route('/adminlogin', methods=['GET', 'POST'])
+def login():
+	error = None
+	if request.method == 'POST':
+		if request.form['username'] == 'aurous' and request.form['password'] == 'admin':
+			session['logged_in'] = True
+			flash('You have just logged in!')
+			return redirect(url_for('adminhome'))
+		else:
+			error = 'Invalid credentials. You can only log in if you are part of management at Aurous®.'
+	return render_template('aurous_admin.html', error=error)
+
+@app.route('/adminhome')
+@login_required
+def adminhome():
+	data = db.execute("SELECT * FROM CustomerFeedback WHERE GuestOnly == 0").fetchall()
+	guest_entries = db.execute("SELECT * FROM CustomerFeedback WHERE GuestOnly == 1").fetchall()
+	return render_template('adminhome.html', data=data, guest_entries=guest_entries)
+
+@app.route('/logout')
+@login_required
+def logout():
+	session.pop('logged_in', None)
+	flash('See you soon!')
+	return redirect(url_for('home'))
+  
+@app.route('/adminreports', methods=['GET', 'POST'])
+@login_required
+def aurous_reports():
+	if request.method == 'GET':
+		return render_template('aurous_reports.html')
+	else:
+		if request.form.get("report_options") == None:
+			flash('You need to select a report')
+			return redirect(url_for('aurous_reports'))
+		else:
+
+			email = request.form.get("email")
+			confirmemail = request.form.get("confirmemail")
+			
+			# check the "value" in the feedback HTML
+			if request.form.get("report_options") == "males":
+				# "report_options" is the name of the select tag
+				# "males" is the option value
+				# basically if the "males" value from the "report_options" in the select tag.
+				data = db.execute("SELECT * FROM CustomerFeedback WHERE sex = ?", ("male",))
+				return render_template('aurous_reports.html', data=data)
+        
+			elif request.form.get("report_options") == "females":
+				data = db.execute("SELECT * FROM CustomerFeedback WHERE sex =?", ("female",))
+				return render_template('aurous_reports.html', data=data)
+			elif request.form.get("report_options") == "f_visit":
+				data = db.execute("SELECT * FROM CustomerFeedback WHERE first_visit = ?", ("YES",))
+				return render_template('aurous_reports.html', data=data)
+			elif request.form.get("report_options") == "reg_custom":
+				data = db.execute("SELECT * FROM CustomerFeedback WHERE first_visit = ?", ("NO",))
+				return render_template('aurous_reports.html', data=data)
+			elif request.form.get("report_options") == "shisha":
+				data = db.execute("SELECT * FROM CustomerFeedback WHERE shisha = ?", ("YES",))
+				return render_template("aurous_reports.html", data=data)
+
+
+if __name__ == '__main__':
+	app.run(debug=True)
