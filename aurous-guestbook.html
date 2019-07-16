@@ -1,0 +1,26 @@
+{% extends "aurous_base.html" %}
+{% block content %}
+
+<h1>Aurous 79® Guestbook</h1>
+<form class="form-signin" method="post" action="{{ url_for('guestbook') }}">
+<!-- this above may or MAY NOT repost comment back to the home page -->
+  <h2 class="form-signin-heading">How was today's experience at Aurous 79®?</h2>
+  <div class="form-group">
+    <label for="inputName" class="sr-only">Name</label>
+    <input type="text" id="inputName" name="name" class="form-control" placeholder="Name" required autofocus>
+  </div>
+  <div class="form-group">
+    <label for="comment" class="sr-only">Comment:</label>
+      <textarea class="form-control" name="comment" rows="5" id="comment" placeholder="Feedback" required></textarea>
+  </div><br>
+  <label for="inputemail" class="sr-only">Email </label>
+  <input type="text" name="email" id="inputemail" class="form-control" placeholder="Enter Email" required autofocus>
+  <label for="inputemail" class="sr-only">Confirm Email </label>
+  <input type="text" name="confirmemail" id="inputemail" class="form-control" placeholder="Confirm Email" required autofocus>
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Sign Guestbook</button>
+  <br>
+  <h4>Interested in 5% off from your next bill?</h4>
+  <p>Complete the <a href="{{ url_for('feedback') }}">Feedback Form</a> to get your discount code sent to you!</p>
+  <br><br><a href="{{url_for('home') }}">Home</a>  
+</form>
+{% endblock %}
