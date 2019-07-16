@@ -1,0 +1,111 @@
+{% extends "aurous_base.html" %}
+{% block content %}
+
+<h1>Aurous 79® Feedback</h1>
+		<form action="{{ url_for('feedback') }}" method="post">
+			<h3>How was the food? How was the service? Please complete the feedback form below to gain 5% off your bill!</h3><br>
+			<br>
+			<div class="form-group">
+				<label for="inputname" class="sr-only">Name</label>
+				<input type="text" name="name" id="inputname" class="form-control" placeholder="Name" required autofocus>
+			</div><br>
+			<div>
+				<label for="inputage" class="sr-only">Age</label>
+				<input type="text" name="age" id="inputage" class="form-control" placeholder="Age" required autofocus>
+			</div><br>
+			<div>
+				<label for="inputsex" class="sr-only">Sex <select name="sex">
+					<option disabled selected value="sex">Please Select</option>
+					<option value="male">MALE</option>
+					<option value="female">FEMALE</option>					
+				</select>
+				</label>
+			</div>
+			<p>Please enter the first 4 characters of your postcode:</p>
+			<div>
+				<label for="inputarea" class="sr-only">Postcode</label>
+				<input type="text" name="postcode" id="inputarea" class="form-control" placeholder="EG. M18 7 / SW17 / CR0 7" required autofocus><br>
+			</div>
+			<p>Is this your first visit? <select name="firstvisit">
+				<option disabled selected value="first visit">Please Select</option>
+				<option value="YES">YES</option>
+				<option value="NO">NO</option>
+			</select>
+			</p><br>
+			<p>How many times have you visted Aurous? <select name="customervisits">
+				<option disabled selected value="customer visits">Please Select</option>
+				<option value="less than 3">Less than 3</option>
+				<option value="4 - 6">4 - 6</option>
+				<option value="7 - 9">7 - 9</option>
+				<option value="10+">10+</option>
+			</select>
+			</p><br>
+			<p>Would you come back? <select name="returncustomers">
+				<option disabled selected value="return customers">Please Select</option>
+				<option value="YES">YES</option>
+				<option value="NO">NO</option>
+			</select>
+			</p><br>
+			<p>On a scale of 1-10, please rate the following (1=worst 10=best):</p>
+			<p>Cleaniness & Appearance <select name="cleanliness">
+				<option disabled selected value="cleanliness">Please Select</option>
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+				<option value="5">5</option>
+				<option value="6">6</option>
+				<option value="7">7</option>
+				<option value="8">8</option>
+				<option value="9">9</option>
+				<option value="10">10</option>
+			</select>
+			</p>
+			<p>Customer Service <select name="customerservice">
+				<option disabled selected value="service">Please Selelct</option>
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+				<option value="5">5</option>
+				<option value="6">6</option>
+				<option value="7">7</option>
+				<option value="8">8</option>
+				<option value="9">9</option>
+				<option value="10">10</option>
+			</select>
+			</p>
+			<p>Speed of Service <select name="speed">
+				<option disabled selected value="speed">Please Select</option>
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+				<option value="5">5</option>
+				<option value="6">6</option>
+				<option value="7">7</option>
+				<option value="8">8</option>
+				<option value="9">9</option>
+				<option value="10">10</option>
+			</select>	
+			</p>
+			<p>Did you try our shisha? <select name="shisha">
+				<option disabled selected value="shisha">Please Select</option>
+				<option value="YES">YES</option>
+				<option value="NO">NO</option>
+			</select>
+			</p>
+			<p>Any other suggestions / feedback 
+				<textarea class="form-control" name="comment" id="comment" rows="6" placeholder="Feedback/Comment" required></textarea>
+			</p><br>
+
+			<h3>Please enter your email in order to recieve your 5% discount !</h3>
+			<label for="inputemail" class="sr-only">Email </label>
+			<input type="text" name="email" id="inputemail" class="form-control" placeholder="Enter Email" required autofocus>
+			<label for="inputemail" class="sr-only">Confirm Email </label>
+			<input type="text" name="confirmemail" id="inputemail" class="form-control" placeholder="Confirm Email" required autofocus>
+			<br><br><button class="btn btn-lg btn-primary btn-block" type="submit">Send me my discount!</button>
+			<br><br><a href="{{url_for('home') }}">Home</a>
+		</form>
+
+{% endblock %}
