@@ -22,7 +22,7 @@ app.config.update(dict(
     MAIL_USE_SSL = False,
     MAIL_USERNAME = 'your_email',
     MAIL_PASSWORD = 'your_password',
-    MAIL_DEFAULT_SENDER = ('Aurous 79®', 'sinclair.python@gmail.com'), #('NAME OR TITLE OF SENDER', 'SENDER EMAIL ADDRESS')
+    MAIL_DEFAULT_SENDER = ('Aurous 79®', 'your_email'), #('NAME OR TITLE OF SENDER', 'SENDER EMAIL ADDRESS')
     MAIL_MAX_EMAILS = 5
 ))
 
